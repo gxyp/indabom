@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+.tabs { 
+    /* Materialize has a bug that shows the scrollbar sometimes, this prevents it */
+    /*overflow-x: hidden;*/
+}
+
+td, tr {
+    padding-right: 1px;
+    padding-left: 1px;
+    min-width: 60px;
+}
+
+.tight td {
+    padding: 3px 3px;
+}
+
+.tighter {
+    padding: 1px 1px;
+}
+
+.text-small {
+    font-size: .75em;
+}
+
+.text-normal {
+    font-size: 1em;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.info {
+    color: red;
+}
+
+.td-small {
+    width: 60px;
+}
+
+.td-med {
+    width: 160px;
+    min-width: 120px;
+    position: relative;
+}
+
+.td-large {
+    width: 450px;
+    /*max-width: 450px;*/
+    min-width: 150px;
+    position: relative;
+
+    .limited {
+        display: inline-block; 
+        white-space: nowrap; 
+        top: 0; 
+        position: absolute; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        width: 100%; 
+        padding: 3px;
+    }
+}
+
+.limited {
+    display: inline-block; 
+    white-space: nowrap; 
+    top: 0; 
+    position: absolute; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    width: 100%; 
+    padding: 3px;
+}
+
+.push-footer {
+    min-height: 100vh;
+}
+
+.autocomplete-content {
+    opacity: .8;
+    position: absolute;
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+.cell-collapsed {
+    /* background: grey; */
+    background-color: #f2f2f2;
+}

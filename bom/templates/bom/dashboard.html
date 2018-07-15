@@ -1,0 +1,75 @@
+{% extends 'bom/bom-action-btn.html' %}
+
+{% load staticfiles %}
+
+{% block head-title %}Home{% endblock %}
+
+{% block title %}
+<link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
+{{ organization }}'s Parts List
+{% endblock %}
+
+{% block menu %}
+<!-- <li><a href="{% url 'create-part' %}">New Part</a></li>
+<li><a href="{% url 'upload-parts' %}">Upload Parts</a></li> -->
+<li><a href="{% url 'export-part-list' %}">Export</a></li>
+{% endblock%}
+
+{% block content %}
+<div class="row">
+    <div class="col s12">
+        <div class="input-field col s12">
+            <form action="{% url 'home' %}" method="get" enctype="multipart/form-data">
+                <i class="material-icons prefix">search</i>
+                <input type="text" id="autocomplete-input" class="autocomplete" name="q">
+                <label for="autocomplete-input">Find a part</label>
+                <input type="submit" class="btn hidden" value="Search"/>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="part-list push-footer">
+    <table class="highlight part-list tight">
+        <thead>
+            <tr>
+                <th class="text-normal td-med">Part Number</th>
+                <th class="text-normal td-large">Description</th> 
+                <th class="text-normal td-small">Revision</th>
+                <th class="text-normal td-med">Manufacturer</th>
+                <th class="text-normal td-med">MPN</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for part in parts %}
+            <tr>
+                <td class="text-normal td-med"><a href="{% url 'part-info' part_id=part.id %}">{{ part.full_part_number }}</a></td>
+                <td class="text-normal td-large">{{ part.description }}</td>
+                <td class="text-normal td-small">{{ part.revision }}</td>
+                <td class="text-normal td-small">{{ part.manufacturer.name }}</td>
+                <td class="text-normal td-med">{{ part.manufacturer_part_number }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="99" style="text-align: center; padding: 5%;"><i>No parts found.</i></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+// console.log('{{ autocomplete|safe }}');
+var data = JSON.parse('{{ autocomplete|safe }}');;
+$(document).ready(function(){
+    console.log(data);
+    $('input.autocomplete').autocomplete({
+        data: data,
+        limit: 10, // The max amount of results that can be shown at once. Default: Infinity.
+        onAutocomplete: function(val) {
+          // Callback function when value is autcompleted.
+        },
+        minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
+    });
+});
+</script>
+{% endblock %}
