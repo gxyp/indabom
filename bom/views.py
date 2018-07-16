@@ -42,8 +42,9 @@ def home(request):
     parts = Part.objects.filter(
         organization=organization).order_by(
         'number_class__code',
+        'number_variation',
         'number_item',
-        'number_variation')
+	'revision')
 
     autocomplete_dict = {}
     for part in parts:
@@ -402,22 +403,34 @@ def upload_parts(request):
                     if 'manufacturer' in partData:
                         mfg_name = partData['manufacturer'] if partData['manufacturer'] is not None else ''
                         mfg, created = Manufacturer.objects.get_or_create(
-                            name=mfg_name, organization=organization)
+                            name=mfg_name.upper(), organization=organization)
+
+		    note = ''	
+                    if 'note' in partData:
+                        note = partData['note'] 
+
+                    mainPart, item = partData['part_class'].split("-")
+   		    gaopClass = mainPart[:-1]
+		    gaov = int(mainPart[-1])
+		    item = int(item)
 
                     try:
                         part_class = PartClass.objects.get(
-                            code=partData['part_class'])
+                            code=gaopClass)
                     except PartClass.DoesNotExist:
                         messages.error(
                             request, "Partclass {} doesn't exist.".format(
-                                partData['part_class']))
+                                gaopClass))
                         return HttpResponseRedirect(reverse('error'))
 
                     part, created = Part.objects.get_or_create(number_class=part_class,
+							       number_item=item,
+							       number_variation=gaov,
                                                                description=partData['description'],
                                                                revision=partData['revision'],
                                                                organization=organization,
                                                                manufacturer_part_number=mpn,
+							       note = note,
                                                                manufacturer=mfg)
                     if created:
                         messages.info(

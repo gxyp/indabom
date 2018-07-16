@@ -18,7 +18,7 @@
 
 {% block content %}
 <div class="part-info push-footer">
-    <p class="light">Item #{{ part.full_part_number}}</p>
+    <p class="light">Item #{{ part.CM_part_number}}</p>
     <h4 class="light header">{{ part.description }}</h5>
 
     <div class="row">
@@ -179,7 +179,7 @@
                         {% endwith %}
                         {{ subpart.indent_level }}
                         </td>
-                        <td class="text-normal"><a href="{% url 'part-info' part_id=subpart.part.id %}">{{ subpart.part.full_part_number }}</a></td>
+                        <td class="text-normal"><a href="{% url 'part-info' part_id=subpart.part.id %}">{{ subpart.part.CM_part_number }}</a></td>
                         <td class="text-normal td-small">{{ subpart.quantity }}</td>
                         <td class="text-normal td-large"><div class="limited">{{ subpart.part.description }}<div></td>
                         <td class="text-normal td-small">{{ subpart.part.revision }}</td>
@@ -216,7 +216,7 @@
                 <tbody>
                     {% for used_part in where_used %}
                     <tr>
-                        <td><a href="{% url 'part-info' part_id=used_part.id %}">{{ used_part.full_part_number }}</a></td>
+                        <td><a href="{% url 'part-info' part_id=used_part.id %}">{{ used_part.CM_part_number }}</a></td>
                         <td>{{ used_part.description }}</td>
                         <td>{{ used_part.revision }}</td>
                         <td>{{ used_part.manufacturer.name }}</td>

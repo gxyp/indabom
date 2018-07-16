@@ -42,7 +42,7 @@
         <tbody>
             {% for part in parts %}
             <tr>
-                <td class="text-normal td-med"><a href="{% url 'part-info' part_id=part.id %}">{{ part.full_part_number }}</a></td>
+                <td class="text-normal td-med"><a href="{% url 'part-info' part_id=part.id %}">{{ part.CM_part_number }}</a></td>
                 <td class="text-normal td-large">{{ part.description }}</td>
                 <td class="text-normal td-small">{{ part.revision }}</td>
                 <td class="text-normal td-small">{{ part.manufacturer.name }}</td>
