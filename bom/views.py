@@ -9,6 +9,8 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.template.response import TemplateResponse
 from django.db import IntegrityError
 from django.db.models import Q
+from django.db.models.functions import Concat, Substr,Length
+from django.db.models import Func, CharField, F,Value
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
@@ -58,9 +60,18 @@ def home(request):
 
     autocomplete = json.dumps(autocomplete_dict)
 
+    parts = parts.all().annotate(item_t= Concat(Value('000'),'number_item',output_field=CharField()))
+    parts = parts.all().annotate(item = Substr(F('item_t'),Length('item_t')-2,3,output_field=CharField()))
+
+    parts = parts.all().annotate(class_t = Concat(Value('00'),F('number_class')))
+    parts= parts.all().annotate(gc= Substr(F('class_t'),Length('class_t')-1,2,output_field=CharField()))
+
+    parts = parts.all().annotate(cm_pn = Concat(F('gc'),F('number_variation'),Value('-'),F('item'),Value('_'),F('revision')))
+
+
     query = request.GET.get('q', '')
     if query:
-        parts = parts.filter(Q(description__icontains=query) | Q(manufacturer_part_number__icontains=query) | Q(manufacturer__name__icontains=query))
+        parts = parts.filter(Q(description__icontains=query) | Q(manufacturer_part_number__icontains=query) | Q(manufacturer__name__icontains=query) | Q(cm_pn__icontains=query) )
         # TODO: query full part number
 
     return TemplateResponse(request, 'bom/dashboard.html', locals())
