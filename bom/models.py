@@ -7,6 +7,7 @@ from django.contrib.auth.models import User, Group
 from .validators import alphanumeric, numeric
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+ 
 
 
 class Organization(models.Model):
@@ -38,7 +39,7 @@ User.add_to_class('bom_profile', _user_meta)
 
 
 class PartClass(models.Model):
-    code = models.CharField(max_length=3, unique=True)
+    code = models.CharField(max_length=3, unique=True, primary_key=True)
     name = models.CharField(max_length=255, default=None)
     comment = models.CharField(max_length=255, default=None, blank=True)
 
