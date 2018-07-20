@@ -9,8 +9,8 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.template.response import TemplateResponse
 from django.db import IntegrityError
 from django.db.models import Q
-from django.db.models.functions import Concat, Substr,Length
-from django.db.models import Func, CharField, F,Value
+from django.db.models.functions import Concat, Substr,Length,Cast
+from django.db.models import Func, CharField, F,Value, IntegerField
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 def home(request):
     profile = request.user.bom_profile()
     organization = profile.organization
+    partclasses = PartClass.objects.all().annotate(pc_int=Cast('code',IntegerField())).order_by('pc_int')
 
     if profile.organization is None:
         organization, created = Organization.objects.get_or_create(
@@ -68,6 +69,8 @@ def home(request):
 
     parts = parts.all().annotate(cm_pn = Concat(F('gc'),F('number_variation'),Value('-'),F('item'),Value('_'),F('revision')))
 
+
+    parts = parts.all().order_by('gc', 'number_variation', 'number_item', 'revision')
 
     query = request.GET.get('q', '')
     if query:
@@ -387,7 +390,7 @@ def upload_parts(request):
     user = request.user
     profile = user.bom_profile()
     organization = profile.organization
-    partclasses = PartClass.objects.all()
+    partclasses = PartClass.objects.all().annotate(pc_int=Cast('code',IntegerField())).order_by('pc_int')
 
     if request.method == 'POST' and request.FILES['file'] is not None:
         form = FileForm(request.POST, request.FILES)
