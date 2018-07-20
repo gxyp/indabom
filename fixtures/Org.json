@@ -1,0 +1,10 @@
+[
+   { "model": "bom.Organization",
+     "pk" : 3,
+     "fields" : {
+        "name" : "CM111",
+        "subscription" : "P",
+        "owner" : ["admin"]
+      }
+    }
+]
