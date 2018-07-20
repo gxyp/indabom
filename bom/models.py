@@ -96,13 +96,16 @@ class Part(models.Model):
         unique_together = ['number_class', 'number_item', 'number_variation', 'organization','revision',]
 
     def full_part_number(self):
-        return "{0}-{1}-{2}".format(self.number_class.code,
-                                    self.number_item, self.number_variation)
-
-    def CM_part_number(self):
+#        return "{0}-{1}-{2}".format(self.number_class.code,
+#                                    self.number_item, self.number_variation)
         return "{0}{1}-{2:0>3}_{3}".format(self.number_class.code,
                                     self.number_variation, self.number_item,
 				    self.revision)
+
+#    def CM_part_number(self):
+#        return "{0}{1}-{2:0>3}_{3}".format(self.number_class.code,
+#                                    self.number_variation, self.number_item,
+#				    self.revision)
 
     # def distributor_parts(self):
     #     return SellerPart.objects.filter(
