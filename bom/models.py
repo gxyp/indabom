@@ -93,7 +93,7 @@ class Part(models.Model):
             'assembly_subpart'))
 
     class Meta():
-        unique_together = ['number_class', 'number_item', 'number_variation', 'organization','revision',]
+        unique_together = ['number_class', 'number_item', 'number_variation', 'organization','revision','manufacturer']
 
     def full_part_number(self):
 #        return "{0}-{1}-{2}".format(self.number_class.code,
@@ -207,7 +207,10 @@ class Part(models.Model):
         super(Part, self).save()
 
     def __unicode__(self):
-        return u'%s' % (self.full_part_number())
+	if self.description :
+        	return u'%s' % (self.description)
+	else :
+		return u'%s' % (self.full_part_number())
 
 
 class Subpart(models.Model):

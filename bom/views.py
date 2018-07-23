@@ -18,7 +18,7 @@ from django.urls import reverse
 from django.utils.encoding import smart_str
 from django.contrib import messages
 from json import loads, dumps
-from .convert import full_part_number_to_broken_part
+from .convert import full_part_number_to_broken_part, full_part_number_to_broken_cmpart
 from .models import Part, PartClass, Subpart, SellerPart, Organization, PartFile, Manufacturer
 from .forms import PartInfoForm, PartForm, AddSubpartForm, FileForm, AddSellerPartForm
 from .octopart_parts_match import match_part
@@ -324,12 +324,13 @@ def part_upload_bom(request, part_id):
                 
                 if 'part_number' in partData and 'quantity' in partData and len(partData['part_number']) > 0:
                     try:
-                        civ = full_part_number_to_broken_part(
+                        civ = full_part_number_to_broken_cmpart(
                             partData['part_number'])
                         subparts = Part.objects.filter(
                             number_class=civ['class'],
                             number_item=civ['item'],
-                            number_variation=civ['variation'])
+                            number_variation=civ['variation'],
+                            revision=civ['revision'])
                     except IndexError:
                         messages.error(
                             request, "Invalid part_number: {}".format(partData['part_number']))
@@ -339,28 +340,6 @@ def part_upload_bom(request, part_id):
                         messages.info(
                             request, "Subpart: `{}` doesn't exist".format(
                                 partData['part_number']))
-                        continue
-
-                    subpart = subparts[0]
-                    count = partData['quantity']
-                    if part == subpart:
-                        messages.error(
-                            request, "Recursive part association: a part cant be a subpart of itsself")
-                        return HttpResponseRedirect(reverse('part-manage-bom', kwargs={'part_id': part_id}))
-
-                    sp = Subpart(
-                        assembly_part=part,
-                        assembly_subpart=subpart,
-                        count=count)
-                    sp.save()
-                elif 'manufacturer_part_number' in partData and 'quantity' in partData:
-                    mpn = partData['manufacturer_part_number']
-                    subparts = Part.objects.filter(manufacturer_part_number=mpn)
-
-                    if len(subparts) == 0:
-                        messages.info(
-                            request, "Subpart: `{}` doesn't exist".format(
-                                partData['manufacturer_part_number']))
                         continue
 
                     subpart = subparts[0]
@@ -591,11 +570,12 @@ def create_part(request):
                     number_class=form.cleaned_data['number_class'],
                     number_item=form.cleaned_data['number_item'],
                     number_variation=form.cleaned_data['number_variation'],
+                    revision=form.cleaned_data['revision'],
                     manufacturer_part_number=form.cleaned_data['manufacturer_part_number'],
                     manufacturer=form.cleaned_data['manufacturer'],
                     organization=organization,
                     defaults={'description': form.cleaned_data['description'],
-                            'revision': form.cleaned_data['revision'],
+                              'note' : "", 
                             }
                 )
             except IntegrityError as e:
