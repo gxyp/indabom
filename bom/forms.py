@@ -26,7 +26,7 @@ class PartForm(forms.Form):
     number_variation = forms.CharField(
         max_length=2, label='Part Variation', required=False, 
         validators=[alphanumeric],
-        widget=forms.TextInput(attrs={'placeholder': 'Auto-Generated if blank'}))
+        widget=forms.TextInput(attrs={'placeholder': 'Subcategory for each class'}))
     description = forms.CharField(max_length=255, label='Description*')
     revision = forms.CharField(max_length=2, label='Revision*', initial=1)
     manufacturer_part_number = forms.CharField(max_length=128, required=False)
