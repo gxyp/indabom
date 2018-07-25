@@ -74,6 +74,7 @@ celerybeat-schedule
 # virtualenv
 venv/
 ENV/
+web/
 
 local_setting.py
 .DS_Store
