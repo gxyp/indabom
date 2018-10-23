@@ -4,7 +4,7 @@
      "fields" : {
         "name" : "CM",
         "subscription" : "P",
-        "owner" : ["admin"]
+        "owner" : ["cmcm"]
       }
     }
 ]
