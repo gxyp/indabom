@@ -1,0 +1,13 @@
+[Unit]
+Description=Process Monitoring and Control Daemon
+After=rc-local.service nss-user-lookup.target
+
+[Service]
+Type=forking
+ExecStartPre=/usr/bin/mkdir -p /var/run/indabom
+ExecStartPre=/usr/bin/chown -R indabom:indabom /var/run/indabom
+ExecStart=/usr/bin/supervisord -c /etc/supervisord.conf
+
+[Install]
+WantedBy=multi-user.target
+
